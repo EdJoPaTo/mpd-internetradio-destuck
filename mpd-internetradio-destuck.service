@@ -1,0 +1,15 @@
+[Unit]
+Description=Run mpd-internetradio-destuck
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/mpd-internetradio-destuck
+User=pi
+Group=pi
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+RequiredBy=multi-user.target
