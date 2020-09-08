@@ -13,6 +13,6 @@ $ mpc
 [playing] #1/3 106:15/0:00 (0%)
 ```
 
-This tool should checks on that and fixes this.
+This tool checks on that every 30 seconds and fixes this by stopping and starting again.
 
 Hint: This tool assumes mpd is running on localhost: `Client::connect("127.0.0.1:6600")`
