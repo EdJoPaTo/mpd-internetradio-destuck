@@ -87,7 +87,7 @@ jobs:
         run: |
           sudo apt-get install -y g++-arm-linux-gnueabihf llvm
           mkdir -p ~/.cargo
-          echo '[target.armv7-unknown-linux-gnueabihf]' > ~/.cargo/config
+          echo '[target.${{ matrix.config.triple }}]' > ~/.cargo/config
           echo 'linker = "arm-linux-gnueabihf-g++"' >> ~/.cargo/config
 
       - name: Add Target
