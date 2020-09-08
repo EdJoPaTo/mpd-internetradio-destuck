@@ -64,6 +64,8 @@ jobs:
         config:
           - os: ubuntu-latest
             triple: x86_64-unknown-linux-gnu
+          - os: ubuntu-latest
+            triple: armv7-unknown-linux-gnueabihf
           - os: macOS-latest
             triple: x86_64-apple-darwin
           - os: windows-latest
@@ -79,6 +81,17 @@ jobs:
       - name: Prepare Windows
         if: runner.os == 'Windows'
         run: choco install --no-progress llvm
+
+      - name: install cross-compile armv7
+        if: matrix.config.triple == 'armv7-unknown-linux-gnueabihf'
+        run: |
+          sudo apt-get install -y g++-arm-linux-gnueabihf llvm
+          mkdir -p ~/.cargo
+          echo '[target.armv7-unknown-linux-gnueabihf]' > ~/.cargo/config
+          echo 'linker = "arm-linux-gnueabihf-g++"' >> ~/.cargo/config
+
+      - name: Add Target
+        run: rustup target add ${{ matrix.config.triple }}
 
       - name: Cache cargo registry
         uses: actions/cache@v1
