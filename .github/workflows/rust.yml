@@ -1,0 +1,135 @@
+name: Rust
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: 'Log versions'
+        run: |
+          rustc --version
+          cargo --version
+      - name: Cache cargo registry
+        uses: actions/cache@v1
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+      - name: Cache cargo build
+        uses: actions/cache@v1
+        with:
+          path: target
+          key: ${{ runner.os }}-cargo-lint-target-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Run clippy
+        run: cargo clippy --verbose
+      - name: Check format
+        run: cargo fmt -- --check --verbose
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: 'Log versions'
+        run: |
+          rustc --version
+          cargo --version
+      - name: Cache cargo registry
+        uses: actions/cache@v1
+        with:
+          path: ~/.cargo/registry
+          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+      - name: Cache cargo build
+        uses: actions/cache@v1
+        with:
+          path: target
+          key: ${{ runner.os }}-cargo-test-target-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Build
+        run: cargo build --verbose --locked --all-targets
+
+      - name: Run tests
+        run: cargo test --verbose --all-targets
+
+  release:
+    name: Release ${{ matrix.config.triple }}
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      matrix:
+        config:
+          - os: ubuntu-latest
+            triple: x86_64-unknown-linux-gnu
+          - os: macOS-latest
+            triple: x86_64-apple-darwin
+          - os: windows-latest
+            triple: x86_64-pc-windows-msvc
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Log versions
+        run: |
+          rustc --version
+          cargo --version
+
+      - name: Prepare Windows
+        if: runner.os == 'Windows'
+        run: choco install --no-progress llvm
+
+      - name: Cache cargo registry
+        uses: actions/cache@v1
+        with:
+          path: ~/.cargo/registry
+          key: ${{ matrix.config.triple }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
+      - name: Cache cargo build
+        uses: actions/cache@v1
+        with:
+          path: target
+          key: ${{ matrix.config.triple }}-cargo-release-target-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Build release
+        run: cargo build --release --verbose --locked --all-targets --target ${{ matrix.config.triple }}
+
+      - name: Pack release zip (linux, mac)
+        if: runner.os == 'Linux' || runner.os == 'macOS'
+        run: |
+          rm -f *.zip
+          cd target/${{ matrix.config.triple }}/release
+          zip -r ../../../mpd-internetradio-destuck-${{ matrix.config.triple }}.zip mpd-internetradio-destuck
+      - name: Pack release zip (windows)
+        if: runner.os == 'Windows'
+        run: |
+          del *.zip
+          Compress-Archive -CompressionLevel Optimal -Force -Path target/${{ matrix.config.triple }}/release/mpd-internetradio-destuck.exe -DestinationPath mpd-internetradio-destuck-${{ matrix.config.triple }}.zip
+
+      - name: inspect target dir
+        if: runner.os == 'Linux' || runner.os == 'macOS'
+        run: |
+          ls -al target
+          ls -al target/*
+
+      - name: Release Artifact (linux, mac)
+        if: runner.os == 'Linux' || runner.os == 'macOS'
+        uses: actions/upload-artifact@v2
+        with:
+          name: mpd-internetradio-destuck-${{ matrix.config.triple }}
+          path: target/${{ matrix.config.triple }}/release/mpd-internetradio-destuck
+      - name: Release Artifact (windows)
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v2
+        with:
+          name: mpd-internetradio-destuck-${{ matrix.config.triple }}
+          path: target/${{ matrix.config.triple }}/release/mpd-internetradio-destuck.exe
+
+      - name: GH Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v0.1.5
+        with:
+          draft: true
+          files: '*.zip'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
