@@ -36,6 +36,7 @@ fn check(conn: &mut Client) -> Result<(), mpd::error::Error> {
         );
 
         if is_internet_radio_playing(&after) && before.elapsed == after.elapsed {
+            println!("destuck");
             conn.stop()?;
             conn.play()?;
         }
