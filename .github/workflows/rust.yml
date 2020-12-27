@@ -26,7 +26,7 @@ jobs:
           key: ${{ runner.os }}-cargo-lint-target-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Run clippy
-        run: cargo clippy --verbose
+        run: cargo clippy --verbose --all-targets --all-features -- -D warnings
       - name: Check format
         run: cargo fmt -- --check --verbose
 
@@ -117,42 +117,41 @@ jobs:
       - name: Build release
         run: cargo build --release --verbose --locked --all-targets --target ${{ matrix.config.triple }}
 
-      - name: Pack release zip (linux, mac)
-        if: runner.os == 'Linux' || runner.os == 'macOS'
-        run: |
-          rm -f *.zip
-          cd target/${{ matrix.config.triple }}/release
-          zip -r ../../../mpd-internetradio-destuck-${{ matrix.config.triple }}.zip mpd-internetradio-destuck
-      - name: Pack release zip (windows)
-        if: runner.os == 'Windows'
-        run: |
-          del *.zip
-          Compress-Archive -CompressionLevel Optimal -Force -Path target/${{ matrix.config.triple }}/release/mpd-internetradio-destuck.exe -DestinationPath mpd-internetradio-destuck-${{ matrix.config.triple }}.zip
-
       - name: inspect target dir
         if: runner.os == 'Linux' || runner.os == 'macOS'
-        run: |
-          ls -al target
-          ls -al target/*
+        run: ls -al target/*/release
 
-      - name: Release Artifact (linux, mac)
+      - name: Upload Artifact (linux, mac)
         if: runner.os == 'Linux' || runner.os == 'macOS'
         uses: actions/upload-artifact@v2
         with:
           name: mpd-internetradio-destuck-${{ matrix.config.triple }}
           path: target/${{ matrix.config.triple }}/release/mpd-internetradio-destuck
-      - name: Release Artifact (windows)
+      - name: Upload Artifact (windows)
         if: runner.os == 'Windows'
         uses: actions/upload-artifact@v2
         with:
           name: mpd-internetradio-destuck-${{ matrix.config.triple }}
           path: target/${{ matrix.config.triple }}/release/mpd-internetradio-destuck.exe
 
+      - name: Pack release (linux, mac)
+        if: runner.os == 'Linux' || runner.os == 'macOS'
+        run: |
+          rm -f *.tar.gz
+          tar -czf mpd-internetradio-destuck-${{ matrix.config.triple }}.tar.gz -C target/${{ matrix.config.triple }}/release mpd-internetradio-destuck
+      - name: Pack release (windows)
+        if: runner.os == 'Windows'
+        run: |
+          del *.zip
+          Compress-Archive -CompressionLevel Optimal -Force -Path target/${{ matrix.config.triple }}/release/mpd-internetradio-destuck.exe -DestinationPath mpd-internetradio-destuck-${{ matrix.config.triple }}.zip
+
       - name: GH Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v0.1.5
         with:
           draft: true
-          files: '*.zip'
+          files: |
+            *.zip
+            *.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
