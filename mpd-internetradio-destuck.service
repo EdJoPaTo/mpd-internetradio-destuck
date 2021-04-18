@@ -6,8 +6,7 @@ After=network-online.target
 [Service]
 Type=simple
 ExecStart=/usr/local/bin/mpd-internetradio-destuck
-User=pi
-Group=pi
+DynamicUser=true
 Restart=on-failure
 RestartSec=5s
 
