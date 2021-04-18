@@ -8,9 +8,9 @@ checksum = "40e38929add23cdf8a366df9b0e088953150724bcbe5fc330b0d8eb3b328eec8"
 
 [[package]]
 name = "libc"
-version = "0.2.87"
+version = "0.2.93"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "265d751d31d6780a3f956bb5b8022feba2d94eeee5a84ba64f4212eedca42213"
+checksum = "9385f66bf6105b241aa65a61cb923ef20efc665cb9f9bb50ac2f0c4b7f378d41"
 
 [[package]]
 name = "mpd"
@@ -25,7 +25,7 @@ dependencies = [
 
 [[package]]
 name = "mpd-internetradio-destuck"
-version = "0.2.0"
+version = "0.2.2"
 dependencies = [
  "mpd",
 ]

@@ -1,6 +1,6 @@
 [package]
 name = "mpd-internetradio-destuck"
-version = "0.2.0"
+version = "0.2.2"
 license = "MIT"
 authors = ["EdJoPaTo <git-commit-with-a-funny-long-email-address-everyone-hates-as-it-is-too-long@edjopato.de>"]
 edition = "2018"
