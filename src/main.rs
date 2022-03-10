@@ -45,6 +45,6 @@ fn check(conn: &mut Client) -> Result<(), mpd::error::Error> {
     Ok(())
 }
 
-fn is_internet_radio_playing(status: &Status) -> bool {
-    status.state == State::Play && status.duration == None
+const fn is_internet_radio_playing(status: &Status) -> bool {
+    matches!(status.state, State::Play) && status.duration.is_none()
 }
