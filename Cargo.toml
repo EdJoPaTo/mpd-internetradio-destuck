@@ -25,8 +25,6 @@ assets = [
     ["target/release/mpd-internetradio-destuck", "/usr/bin/mpd-internetradio-destuck", "755"],
     ["LICENSE", "/usr/share/licenses/mpd-internetradio-destuck/LICENSE", "644"],
     ["README.md", "/usr/share/doc/mpd-internetradio-destuck/README.md", "644"],
-
-    ["systemd/system/service", "/lib/systemd/system/mpd-internetradio-destuck.service", "644"],
 ]
 
 # https://crates.io/crates/cargo-generate-rpm
