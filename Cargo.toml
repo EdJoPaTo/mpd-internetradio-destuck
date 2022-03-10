@@ -3,10 +3,38 @@ name = "mpd-internetradio-destuck"
 description = "Fix mpd getting stuck on internet radio when the daily disconnect happens"
 version = "0.2.3"
 license = "MIT"
-authors = ["EdJoPaTo <git-commit-with-a-funny-long-email-address-everyone-hates-as-it-is-too-long@edjopato.de>"]
-edition = "2018"
-
+repository = "https://github.com/EdJoPaTo/mpd-internetradio-destuck"
+authors = ["EdJoPaTo <mpd-internetradio-destuck-rust@edjopato.de>"]
+edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[profile.release]
+# See https://doc.rust-lang.org/rustc/codegen-options/index.html
+codegen-units = 1
+lto = true
 
 [dependencies]
 mpd = "0.0.12"
+
+# https://crates.io/crates/cargo-deb
+[package.metadata.deb]
+depends = ""
+maintainer-scripts = "systemd/system/"
+systemd-units = {}
+assets = [
+    ["target/release/mpd-internetradio-destuck", "/usr/bin/mpd-internetradio-destuck", "755"],
+    ["LICENSE", "/usr/share/licenses/mpd-internetradio-destuck/LICENSE", "644"],
+    ["README.md", "/usr/share/doc/mpd-internetradio-destuck/README.md", "644"],
+
+    ["systemd/user/service", "/lib/systemd/user/mpd-internetradio-destuck.service", "644"],
+]
+
+# https://crates.io/crates/cargo-generate-rpm
+[package.metadata.generate-rpm]
+assets = [
+    { source = "target/release/mpd-internetradio-destuck", dest = "/usr/bin/mpd-internetradio-destuck", mode = "755" },
+    { source = "LICENSE", dest = "/usr/share/licenses/mpd-internetradio-destuck/LICENSE", mode = "644", doc = true },
+    { source = "README.md", dest = "/usr/share/doc/mpd-internetradio-destuck/README.md", mode = "644", doc = true },
+
+    { source = "systemd/system/service", dest = "/usr/lib/systemd/system/mpd-internetradio-destuck.service", mode = "644" },
+]

@@ -2,13 +2,14 @@
 Description=Run mpd-internetradio-destuck
 Wants=network-online.target
 After=network-online.target
+StartLimitIntervalSec=0
 
 [Service]
 Type=simple
-ExecStart=/usr/local/bin/mpd-internetradio-destuck
 DynamicUser=true
 Restart=on-failure
 RestartSec=5s
+ExecStart=/usr/local/bin/mpd-internetradio-destuck
 
 [Install]
 WantedBy=multi-user.target
