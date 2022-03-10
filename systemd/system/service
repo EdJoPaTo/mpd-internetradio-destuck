@@ -9,7 +9,7 @@ Type=simple
 DynamicUser=true
 Restart=on-failure
 RestartSec=5s
-ExecStart=/usr/local/bin/mpd-internetradio-destuck
+ExecStart=/usr/bin/mpd-internetradio-destuck
 
 [Install]
 WantedBy=multi-user.target
