@@ -1,7 +1,7 @@
 [package]
 name = "mpd-internetradio-destuck"
 description = "Fix mpd getting stuck on internet radio when the daily disconnect happens"
-version = "0.2.4"
+version = "0.2.5"
 license = "MIT"
 repository = "https://github.com/EdJoPaTo/mpd-internetradio-destuck"
 authors = ["EdJoPaTo <mpd-internetradio-destuck-rust@edjopato.de>"]
