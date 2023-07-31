@@ -14,7 +14,7 @@ codegen-units = 1
 lto = true
 
 [dependencies]
-mpd = "0.0.12"
+mpd = "0.1"
 
 # https://crates.io/crates/cargo-deb
 [package.metadata.deb]
