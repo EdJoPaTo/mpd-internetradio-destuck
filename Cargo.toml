@@ -6,10 +6,14 @@ license = "MIT"
 repository = "https://github.com/EdJoPaTo/mpd-internetradio-destuck"
 authors = ["EdJoPaTo <mpd-internetradio-destuck-rust@edjopato.de>"]
 edition = "2021"
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lints.rust]
+unsafe_code = "forbid"
+[lints.clippy]
+pedantic = "warn"
+nursery = "warn"
 
 [profile.release]
-# See https://doc.rust-lang.org/rustc/codegen-options/index.html
 codegen-units = 1
 lto = true
 
