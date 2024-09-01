@@ -1,6 +1,7 @@
-use mpd::{Client, State, Status};
 use std::thread::sleep;
 use std::time::Duration;
+
+use mpd::{Client, State, Status};
 
 const BETWEEN_CHECKS: Duration = Duration::from_secs(30);
 const BETWEEN_ELAPSED: Duration = Duration::from_millis(400);
